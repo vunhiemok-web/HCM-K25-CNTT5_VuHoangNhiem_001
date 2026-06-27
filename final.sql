@@ -131,10 +131,13 @@ WHERE rating = (SELECT MAX(rating) FROM Shippers);
 CREATE INDEX idx_shipment_status_value
 ON Shipments(shipment_status, shipment_value);
 
+DROP VIEW IF EXISTS vw_driver_performance;
 CREATE VIEW vw_driver_performance AS
-SELECT sp.full_name, COUNT(de_or.order_id), SUM(de_or.shipping_fee)
+SELECT sp.full_name, COUNT(de_or.order_id), SUM(de_or.shipping_fee), de_or.order_status
 FROM Shippers sp
 JOIN Delivery_Orders de_or
+ON sp.driver_id = de_or.driver_id
 GROUP BY sp.full_name
 HAVING de_or.order_status != "Cancelled";
+
 
